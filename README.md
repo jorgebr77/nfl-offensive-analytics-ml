@@ -228,32 +228,52 @@ Raw datasets are intentionally excluded from this repository because of their si
 
 Follow the steps below to download the data and execute the analysis independently.
 
-### 1. Clone the repository
+### 1. Clone or download the repository
 
-```bash
+Run the setup commands below in **Windows PowerShell**, not in a Python notebook or on the GitHub website. You can open PowerShell from the Windows Start menu.
+
+**Option A: Clone using Git**
+
+This option requires [Git](https://git-scm.com/downloads) to be installed. In PowerShell, navigate to the location where you want to save the project (for example, your Desktop), then clone it:
+
+```powershell
+cd "$HOME\Desktop"
 git clone https://github.com/jorgebr77/nfl-offensive-analytics-ml.git
 cd nfl-offensive-analytics-ml
 ```
 
-Alternatively, download the repository using **Code → Download ZIP** on GitHub and extract the contents.
+**Option B: Download ZIP (Git not required)**
+
+1. Open the [GitHub repository](https://github.com/jorgebr77/nfl-offensive-analytics-ml).
+2. Select **Code → Download ZIP**.
+3. Extract the ZIP into a folder of your choice (for example, your Desktop).
+4. In PowerShell, navigate to the extracted repository folder. If you extracted it directly onto your Desktop, use:
+
+```powershell
+cd "$HOME\Desktop\nfl-offensive-analytics-ml-main"
+```
+
+Adjust the path if you extracted the ZIP elsewhere. **All remaining PowerShell commands should be run from the project root**, the folder containing `README.md`, `requirements.txt`, and `download_data.py`.
 
 ### 2. Set up the Python environment
 
-Requires Python 3.10 or newer.
+Requires **Python 3.10 or newer**. The independent home-computer verification used Python 3.11.9.
 
-On Windows PowerShell:
+In Windows PowerShell, create a separate virtual environment and install the project dependencies, Jupyter Notebook, and the Python kernel:
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install notebook ipykernel
 ```
 
-If PowerShell prevents environment activation, the environment's Python executable can be used directly:
+These commands invoke the virtual environment's Python directly, so **PowerShell activation is not required** and the steps work even if your execution policy blocks `Activate.ps1`.
+
+To confirm the installed packages are consistent, run:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip check
 ```
 
 ### 3. Download the NFL datasets
@@ -261,7 +281,7 @@ If PowerShell prevents environment activation, the environment's Python executab
 Run the included download script:
 
 ```powershell
-python download_data.py
+.\.venv\Scripts\python.exe download_data.py
 ```
 
 The script retrieves the seven season-specific Parquet files from nflverse and saves them into the local `data/` directory:
@@ -286,7 +306,7 @@ $env:NFL_DATA_DIR = 'C:\path\to\your\parquet-folder'
 ### 4. Run the notebook
 
 ```powershell
-python -m jupyter notebook notebooks/portfolio_analysis.ipynb
+.\.venv\Scripts\python.exe -m jupyter notebook notebooks/portfolio_analysis.ipynb
 ```
 
 Select the Python kernel associated with the project environment.
