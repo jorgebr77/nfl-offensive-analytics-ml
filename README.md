@@ -323,7 +323,60 @@ Exact numerical reproduction may require the original data versions and compatib
 
 The `download_data.py` script retrieves currently published nflverse files; it does not freeze a historical dataset snapshot.
 
-The notebook has been developed and executed in its original working environment. Independent clean-environment reproduction should be verified separately before claiming that the published workflow has been fully reproduced.
+Independent clean-environment execution has now been verified on both a work laptop and a home computer. See the verification results below. Exact bit-for-bit reproduction is not claimed.
+
+## Reproducibility Verification
+
+### Independent Home-Computer Test — November 8, 2026
+
+A fresh copy of the public GitHub repository was downloaded and executed on a Windows home computer using **PowerShell**, **Python 3.11.9**, and a new, isolated **`venv`** environment. No files from the original development dataset were copied into the test directory.
+
+The verification followed these steps:
+
+1. Downloaded the repository ZIP from GitHub and extracted it into a separate testing directory.
+2. Created a new `.venv` environment using Python 3.11.9.
+3. Installed `requirements.txt` dependencies plus Jupyter Notebook and `ipykernel`; `pip check` reported no broken requirements.
+4. Ran `download_data.py` to retrieve all seven 2018–2024 play-by-play Parquet files directly from nflverse.
+5. Ran `notebooks/portfolio_analysis.ipynb` using the isolated environment and inspected the saved outputs.
+6. Confirmed that all substantive code cells had execution counts and no saved execution-error outputs.
+
+**Outcome:** Successful clean-environment execution, with closely matching numerical results and the same principal analytical conclusions.
+
+### Original Analysis vs. Home Verification
+
+| Metric | Original analysis | Home verification |
+|---|---:|---:|
+| Team-season observations | 224 | 224 |
+| Offensive clusters | 4 | 4 |
+| Year-to-year cluster retention | 49.48% | 49.48% |
+| Same-season Ridge CV R² | 0.9937 | 0.9938 |
+| 2024 holdout Ridge MAE | 0.4496 | 0.4505 |
+| 2024 persistence baseline MAE | 0.5305 | 0.5314 |
+| Rolling-origin Ridge MAE | 0.4308 | ~0.4310 |
+| Rolling-origin persistence baseline MAE | 0.4969 | 0.4972 |
+| Rolling-origin MAE improvement | 13.31% | 13.32% |
+| Seasons with lower Ridge MAE | 4/4 | 4/4 |
+| Rolling-origin predictions | 128 | 128 |
+
+The home test also agreed closely with an earlier independent work-laptop test using an Anaconda environment. Minor differences from the original results remain unexplained; changes in upstream data or package versions are possible factors, not confirmed causes.
+
+These results support **technical reproducibility** and **close numerical agreement**, not exact bit-for-bit reproduction or guaranteed compatibility with future data and software releases. The 13.32% improvement refers to a reduction in *mean absolute forecasting error* relative to the persistence baseline, not a prediction accuracy percentage.
+
+### Recording the Home Environment
+
+To preserve the software versions used in the home verification, run these commands from the repository root in **Windows PowerShell**:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip freeze > environment-home.txt
+.\.venv\Scripts\python.exe -c "import sys, platform; print('Python:', sys.version); print('Operating system:', platform.platform())" > environment-system-home.txt
+```
+
+The resulting files are saved **beside `README.md` and `requirements.txt`** in the repository root:
+
+- `environment-home.txt` — exact installed Python package versions, including notebook tools.
+- `environment-system-home.txt` — Python version and Windows platform information.
+
+These files are generated locally; **include them in the GitHub commit if you want the environment snapshot publicly available**. The `.venv/` directory and downloaded `data/` files should remain excluded from version control. The general `requirements.txt` remains the project's primary dependency specification; the environment files document a particular successful run.
 
 ## Limitations
 
